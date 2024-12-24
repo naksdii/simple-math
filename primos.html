@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Número Primo</title>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            transition: all 2s; 
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            transition: all 2s;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: all 2s;
+        }
+        
+        button:hover{
+            font-size: 20px;
+            transition: all 2s;
+        }
+        #resultado {
+            margin-top: 20px;
+            font-size: 18px;
+            transition: all 2s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Verificar Número Primo</h1>
+        <input type="number" id="numero" placeholder="Digite um número">
+        <button onclick="verificarPrimo()">Verificar</button>
+        <p id="resultado"></p>
+    </div>
+    <script>
+        function verificarPrimo() {
+            const numero = parseInt(document.getElementById("numero").value);
+            const resultado = document.getElementById("resultado");
+            var divisor;
+            if (isNaN(numero)) {
+                resultado.textContent = "Por favor, digite um número válido.";
+                return;
+            }
+
+            if (numero <= 1) {
+                resultado.textContent = `${numero} não é um número primo.`;
+                return;
+            }
+
+            let primo = true;
+            for (let i = 2; i <= Math.sqrt(numero); i++) {
+                if (numero % i === 0) {
+                    divisor = i
+                    primo = false;
+                    break;
+                }
+            }
+
+            if (primo) {
+                resultado.textContent = `${numero} é um número primo.`;
+            } else {
+                resultado.textContent = `${numero} é divisível por ${divisor}`;
+            }
+        }
+    </script>
+</body>
+</html>

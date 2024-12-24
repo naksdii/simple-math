@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora</title>
+    <style>
+        body {
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #0047AB, #007FFF);
+            transition: all 0.5s, color 0.5s;
+        }
+
+        .calculator {
+            border: 1px solid #0a3980;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #0a84fd9f;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 340px;
+            text-align: center;
+        }
+
+        .calculator input {
+            border-radius: 10px;
+            width: 95%;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 18px;
+            text-align: right;
+            box-shadow: 0 2px 5px #004fe0;
+            background: linear-gradient(to right, #c9dcff, #ffffff);
+            border: 1px solid #092a86;
+        }
+
+        .calculator button {
+            border-radius: 10px;
+            width: 70px;
+            margin: 1%;
+            padding: 10px;
+            font-size: 18px;
+            background: linear-gradient(to left, #3883ec, #007FFF);
+            border: 1px solid #00215f;
+            color: rgb(0, 17, 73);
+            transition: all 0.3s ease, color 1s ease;
+            cursor: pointer;
+        }
+
+        .calculator button:hover {
+            background: linear-gradient(to left, #4088ec, #1188ff);
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .calculator button.clicked {
+            background: linear-gradient(to left, #4572b3, #1868b8);
+            transform: scale(0.95);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+
+        .wide {
+            border-radius: 10px;
+            width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h2>Calculadora</h2>
+        <input type="text" id="display" disabled>
+        <div>
+            <button onclick="buttonClicked(this); memoryAdd()">M+</button>
+            <button onclick="buttonClicked(this); memorySubtract()">M-</button>
+            <button onclick="buttonClicked(this); memoryRecall()">MR</button>
+            <button onclick="buttonClicked(this); setOperation('divide')">/</button>
+        </div>
+        <div>
+            <button onclick="buttonClicked(this); appendNumber('7')">7</button>
+            <button onclick="buttonClicked(this); appendNumber('8')">8</button>
+            <button onclick="buttonClicked(this); appendNumber('9')">9</button>
+            <button onclick="buttonClicked(this); setOperation('multiply')">*</button>
+        </div>
+        <div>
+            <button onclick="buttonClicked(this); appendNumber('4')">4</button>
+            <button onclick="buttonClicked(this); appendNumber('5')">5</button>
+            <button onclick="buttonClicked(this); appendNumber('6')">6</button>
+            <button onclick="buttonClicked(this); setOperation('add')">+</button>
+        </div>
+        <div>
+            <button onclick="buttonClicked(this); appendNumber('1')">1</button>
+            <button onclick="buttonClicked(this); appendNumber('2')">2</button>
+            <button onclick="buttonClicked(this); appendNumber('3')">3</button>
+            <button onclick="buttonClicked(this); setOperation('subtract')">-</button>
+        </div>
+        <div>
+            <button onclick="buttonClicked(this); appendNumber('.')">.</button>
+            <button onclick="buttonClicked(this); appendNumber('0')">0</button>
+            <button onclick="buttonClicked(this); clearDisplay()">C</button>
+            <button class="wide" onclick="buttonClicked(this); calculate()">=</button>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        let num1 = '';
+        let num2 = '';
+        let operation = '';
+        let memory = 0;
+
+        function buttonClicked(button) {
+            const buttons = document.querySelectorAll('.calculator button');
+            buttons.forEach(btn => btn.classList.remove('clicked'));
+            button.classList.add('clicked');
+        }
+
+        function appendNumber(number) {
+            if (operation === '') {
+                num1 += number;
+                document.getElementById('display').value = num1;
+            } else {
+                num2 += number;
+                document.getElementById('display').value = num2;
+            }
+        }
+
+        function setOperation(op) {
+            if (num1 !== '') {
+                operation = op;
+            }
+        }
+
+        function calculate() {
+            let result;
+            const n1 = parseFloat(num1);
+            const n2 = parseFloat(num2);
+
+            if (isNaN(n1) || (operation !== 'sqrt' && isNaN(n2))) {
+                result = "Por favor, insira números válidos.";
+            } else {
+                switch (operation) {
+                    case 'add':
+                        result = n1 + n2;
+                        break;
+                    case 'subtract':
+                        result = n1 - n2;
+                        break;
+                    case 'multiply':
+                        result = n1 * n2;
+                        break;
+                    case 'divide':
+                        result = n2 === 0 ? "Erro: Divisão por zero." : n1 / n2;
+                        break;
+                    case 'sqrt':
+                        result = n1 < 0 ? "Erro: Raiz quadrada de número negativo." : Math.sqrt(n1);
+                        break;
+                    default:
+                        result = "Operação inválida.";
+                }
+            }
+
+            document.getElementById('display').value = result;
+            num1 = '';
+            num2 = '';
+            operation = '';
+        }
+
+        function clearDisplay() {
+            num1 = '';
+            num2 = '';
+            operation = '';
+            document.getElementById('display').value = '';
+        }
+
+        function memoryClear() {
+            memory = 0;
+        }
+
+        function memoryRecall() {
+            document.getElementById('display').value = memory;
+            if (operation === '') {
+                num1 = memory.toString();
+            } else {
+                num2 = memory.toString();
+            }
+        }
+
+        function memoryAdd() {
+            if (operation === '') {
+                memory += parseFloat(num1);
+            } else {
+                memory += parseFloat(num2);
+            }
+        }
+
+        function memorySubtract() {
+            if (operation === '') {
+                memory -= parseFloat(num1);
+            } else {
+                memory -= parseFloat(num2);
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            if (key >= '0' && key <= '9') {
+                appendNumber(key);
+            } else if (key === '+') {
+                setOperation('add');
+            } else if (key === '-') {
+                setOperation('subtract');
+            } else if (key === '*') {
+                setOperation('multiply');
+            } else if (key === '/') {
+                setOperation('divide');
+            } else if (key === 'Enter') {
+                calculate();
+            } else if (key === 'Escape') {
+                clearDisplay();
+            } else if (key === '.') {
+                appendNumber(key);
+            }
+        });
+    </script>
+</body>
+</html>
