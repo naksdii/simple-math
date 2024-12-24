@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cálculo Contínuo de Pi com JavaScript Nativo</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+    </style>
+</head>
+<body>
+    <h1>Cálculo Contínuo de Pi com JavaScript Nativo</h1>
+    <p>Valor atual de Pi: <span id="resultado">0</span></p>
+    <p>Iterações: <span id="iteracoes">0</span></p>
+    <p>Iterações por segundo (média): <span id="iteracoesPorSegundoMedia">0</span></p>
+    <p>Status: <span id="status">Calculando...</span></p>
+
+    <script>
+        let pi = 0;
+        let i = 0;
+        const blocoTamanho = 1000000; // Tamanho do bloco grande para melhorar a precisão
+        let piAnterior = 0;
+        const precisao = 20;
+        let totalIteracoes = 0;
+        let totalTempoDecorrido = 0;
+
+        function calcularTermo() {
+            const maxI = i + blocoTamanho;
+            const iteracoesInicio = i;
+            const tempoInicio = Date.now();
+            for (; i < maxI; i++) {
+                pi += ((i % 2 === 0 ? 1 : -1) / (2 * i + 1));
+            }
+            const tempoFim = Date.now();
+            const piParcial = pi * 4;
+            document.getElementById('resultado').innerText = piParcial.toFixed(precisao);
+            document.getElementById('iteracoes').innerText = i;
+
+            const tempoDecorrido = (tempoFim - tempoInicio) / 1000; // tempo em segundos
+            const iteracoesPorSegundo = (i - iteracoesInicio) / tempoDecorrido;
+            totalIteracoes += (i - iteracoesInicio);
+            totalTempoDecorrido += tempoDecorrido;
+            const iteracoesPorSegundoMedia = totalIteracoes / totalTempoDecorrido;
+
+            document.getElementById('iteracoesPorSegundoMedia').innerText = iteracoesPorSegundoMedia.toFixed(2);
+
+            if (piParcial.toFixed(precisao) === piAnterior.toFixed(precisao)) {
+                document.getElementById('status').innerText = 'Valor de Pi está completo com a precisão máxima possível!';
+            } else {
+                piAnterior = piParcial;
+                setTimeout(calcularTermo, 0);
+            }
+        }
+
+        calcularTermo();
+    </script>
+</body>
+</html>
